@@ -12,4 +12,4 @@ export default function GameOver() {
             </div>
         </div>
     )
-}11
+}
