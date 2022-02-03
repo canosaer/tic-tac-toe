@@ -12,7 +12,7 @@ const getRandomInt = (min, max) => {
     return Math.floor(Math.random() * (max-min+1)) + min
 }
 
-const calculateWinners = (squares) => {
+const calculateWinner = (squares) => {
     const lines = [
 		[0, 1, 2],
 		[3, 4, 5],
@@ -34,9 +34,55 @@ const calculateWinners = (squares) => {
     return null;
 }
 
+const getBestMove = (squares, player) => {
+    const opponent = player === 'X' ? 'O' : 'X'
+
+    const minimax = (squares, isMax) => {
+        const winner = calculateWinner(squares)
+
+        if(winner === player) return { square: -1, score: 1 }
+
+        if(winner === opponent) return { square: -1, score: -1 }
+
+        if(isBoardFull(squares)) return { square: -1, score: 0 }
+
+        const best = { square: -1, score: isMax ? -1000 : 1000 }
+
+        for(let i=0;i<squares.length;i++){
+            if (squares[i]){
+                continue;
+            }
+
+            squares[i] = isMax ? player: opponent
+
+            const score = minimax(squares, !isMax).score
+
+            squares[i] = null;
+
+            if (isMax) {
+                if (score > best.score){
+                    best.score = score
+                    best.square = i
+                }
+            } else{
+                if (score < best.score) {
+                    best.score = score;
+                    best.square = i;
+                }
+            }
+
+        }
+
+        return best
+    }
+
+    return minimax(squares, true).square
+}
+
 export {
     isBoardEmpty,
     isBoardFull,
     getRandomInt,
-    calculateWinners
+    calculateWinner,
+    getBestMove
 }
